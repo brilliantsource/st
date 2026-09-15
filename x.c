@@ -210,7 +210,7 @@ static void propnotify(XEvent *);
 static void selnotify(XEvent *);
 static void xdndsel(XEvent *);
 static void xdndpastedata(char *);
-static void selclear_(XEvent *);
+// VN static void selclear_(XEvent *);
 static void selrequest(XEvent *);
 static void setsel(char *, Time);
 static void mousesel(XEvent *, int);
@@ -236,6 +236,7 @@ static void (*handler[LASTEvent])(XEvent *) = {
 	[MotionNotify] = bmotion,
 	[ButtonPress] = bpress,
 	[ButtonRelease] = brelease,
+//VN
 /*
  * Uncomment if you want the selection to disappear when you select something
  * different in another window.
@@ -257,7 +258,7 @@ static XSelection xsel;
 static TermWindow win;
 static int tstki; /* title stack index */
 static char *titlestack[TITLESTACKSIZE]; /* title stack */
-const char XdndVersion = 5;
+const unsigned char XdndVersion = 5;
 static XrmDatabase xrdb;
 
 /* Font Ring Cache */
@@ -763,11 +764,11 @@ xclipcopy(void)
 	clipcopy(NULL);
 }
 
-void
-selclear_(XEvent *e)
-{
-	selclear();
-}
+// VN void
+//selclear_(XEvent *e)
+//{
+//	selclear();
+//}
 
 void
 selrequest(XEvent *e)
@@ -960,7 +961,7 @@ void
 xloadcols(void)
 {
 	static int loaded;
-	Color *cp;
+// VN  Color *cp;
 
 	if (!loaded) {
 		dc.collen = 1 + (defaultbg = MAX(LEN(colorname), 256));
