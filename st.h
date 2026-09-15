@@ -91,6 +91,7 @@ void printsel(const Arg *);
 void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
 
+int tisaltscreen(void);
 int tattrset(int);
 void tnew(int, int);
 void tresize(int, int);
@@ -116,6 +117,9 @@ void *xmalloc(size_t);
 void *xrealloc(void *, size_t);
 char *xstrdup(const char *);
 
+void kscrollup(const Arg *arg);
+void kscrolldown(const Arg *arg);
+
 /* config.h globals */
 extern char *option;
 extern char *utmp;
@@ -132,3 +136,4 @@ extern unsigned int defaultbg;
 extern unsigned int defaultcs;
 extern float alpha, alphaUnfocused;
 extern float alpha_def;
+extern unsigned int scrollback_lines;
