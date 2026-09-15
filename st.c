@@ -2450,6 +2450,9 @@ strhandle(void)
 				fprintf(stderr, "erresc: %s color not found\n", osc_table[j].str);
 			} else {
 				tfulldirt();
+				if (j == defaultbg)
+					xclearwin();
+				redraw();
 			}
 			return;
 		}
