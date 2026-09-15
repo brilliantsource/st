@@ -117,6 +117,7 @@ void *xrealloc(void *, size_t);
 char *xstrdup(const char *);
 
 /* config.h globals */
+extern char *option;
 extern char *utmp;
 extern char *scroll;
 extern char *stty_args;

@@ -676,6 +676,9 @@ execsh(char *cmd, char **args)
 	if (args) {
 		prog = args[0];
 		arg = NULL;
+	} else if (option) {
+		prog = sh;
+		arg = option;
 	} else if (scroll) {
 		prog = scroll;
 		arg = utmp ? utmp : sh;

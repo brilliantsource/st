@@ -17,6 +17,12 @@ static int borderpx = 2;
  * 5: value of shell in config.h
  */
 static char *shell = "/bin/sh";
+/*
+ * argument that should be used to call shell with,
+ * like  "-l" to make st open shell as login shell.
+ * (needed on shells like busybox-ash.)
+ */
+char *option = NULL;
 char *utmp = NULL;
 /* scroll program: to enable use a string like "scroll" */
 char *scroll = NULL;
