@@ -1824,11 +1824,11 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
         g.fg = defaultbg;
         g.bg = defaultcs;
         drawcol = dc.col[defaultrcs];
-        if (!(og.mode & ATTR_REVERSE)) {
-            unsigned long col = g.bg;
-            g.bg = g.fg;
-            g.fg = col;
-        }
+//        if (!(og.mode & ATTR_REVERSE)) {
+//            unsigned long col = g.bg;
+//            g.bg = g.fg;
+//            g.fg = col;
+//        }
     }
 
     if (IS_TRUECOL(g.bg)) {
