@@ -643,8 +643,25 @@ selnotify(XEvent *e)
          */
         repl = data;
         last = data + nitems * format / 8;
-        while ((repl = memchr(repl, '\n', last - repl))) {
-            *repl++ = '\r';
+        while (repl != last) {
+            if (*repl <= 0x1f) {
+                switch (*repl) {
+                    case 0x09: /* HT \t */
+                    case 0x0D: /* CR \r */
+                        repl++;
+                        break;
+                    case 0x0a: /* LF \n */
+                        *repl++ = '\r';
+                        break;
+                    default:
+                        *repl++ = ' ';
+                        break;
+                };
+            } else if (*repl == 0x7f) { /* DEL */
+                *repl++ = ' ';
+            } else {
+                repl++;
+            }
         }
 
         if (IS_SET(MODE_BRCKTPASTE) && ofs == 0)
