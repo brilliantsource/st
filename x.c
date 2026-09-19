@@ -87,10 +87,10 @@ static void chgalpha(const Arg *);
 #define XEMBED_FOCUS_OUT 5
 
 /* macros */
-#define IS_SET(flag)        ((win.mode & (flag)) != 0)
-#define TRUERED(x)      (((x) & 0xff0000) >> 8)
-#define TRUEGREEN(x)        (((x) & 0xff00))
-#define TRUEBLUE(x)     (((x) & 0xff) << 8)
+#define IS_SET(flag) ((win.mode & (flag)) != 0)
+#define TRUERED(x)   (((x) & 0xff0000) >> 8)
+#define TRUEGREEN(x) (((x) & 0xff00))
+#define TRUEBLUE(x)  (((x) & 0xff) << 8)
 
 typedef XftDraw *Draw;
 typedef XftColor Color;
@@ -99,11 +99,11 @@ typedef XftGlyphFontSpec GlyphFontSpec;
 /* Purely graphic info */
 typedef struct {
     int tw, th; /* tty width and height */
-    int w, h; /* window width and height */
-    int ch; /* char height */
-    int cw; /* char width  */
-    int cyo; /* char y offset */
-    int mode; /* window state/mode flags */
+    int w, h;   /* window width and height */
+    int ch;     /* char height */
+    int cw;     /* char width  */
+    int cyo;    /* char y offset */
+    int mode;   /* window state/mode flags */
     int cursor; /* cursor style */
 } TermWindow;
 
@@ -1821,14 +1821,15 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
         g.bg = defaultfg;
         drawcol = dc.col[defaultrcs];
     } else {
-        g.fg = defaultbg;
-        g.bg = defaultcs;
+        if (selected(cx, cy)) {
+            g.fg = defaultbg;
+            g.bg = defaultcs;
+        } else if (!(og.mode & ATTR_REVERSE)) {
+            unsigned long col = g.bg;
+            g.bg = g.fg;
+            g.fg = col;
+        }
         drawcol = dc.col[defaultrcs];
-//        if (!(og.mode & ATTR_REVERSE)) {
-//            unsigned long col = g.bg;
-//            g.bg = g.fg;
-//            g.fg = col;
-//        }
     }
 
     if (IS_TRUECOL(g.bg)) {

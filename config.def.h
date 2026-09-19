@@ -151,9 +151,12 @@ static const char *colorname[] = {
     [255] = 0,
 
     /* more colors can be added after 255 to use with DefaultXX */
-    "#cccccc",
-    "#2e3440",
-    "black",
+    "#cccccc", // 256
+    "#2e3440", // 257
+    "gray90",  // 258
+    "black",   // 259
+    "gray50",  // 260
+    "yellow",  // 261
 };
 
 
@@ -161,16 +164,17 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor, selection
  */
-unsigned int defaultfg = 7;
-unsigned int defaultbg = 0;
+unsigned int defaultfg = 258; // was 7
+unsigned int defaultbg = 259; // was 0
 unsigned int defaultcs = 256;
 static unsigned int defaultrcs = 257;
-unsigned int bg = 0, bgUnfocused = 16;
-unsigned int selectionbg = 257;
-unsigned int selectionfg = 7;
+unsigned int bg = 259; // was 0
+unsigned int bgUnfocused = 16;
+unsigned int selectionbg = 261; // was 257
+unsigned int selectionfg = 260; // was 7
 /* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
 /* Else if 1 keep original foreground-color of each cell => more colors :) */
-static int ignoreselfg = 1;
+static int ignoreselfg = 0;
 
 /*
  * Default shape of cursor
@@ -534,36 +538,38 @@ unsigned int scrollback_lines = 5000;
 
 /* X resources to update */
 static const XResPref resources[] = {
-    /* name                    type     address */
-    { "st.font",               STRING,  &font },
-    { "st.color0",             STRING,  &colorname[0] },
-    { "st.color1",             STRING,  &colorname[1] },
-    { "st.color2",             STRING,  &colorname[2] },
-    { "st.color3",             STRING,  &colorname[3] },
-    { "st.color4",             STRING,  &colorname[4] },
-    { "st.color5",             STRING,  &colorname[5] },
-    { "st.color6",             STRING,  &colorname[6] },
-    { "st.color7",             STRING,  &colorname[7] },
-    { "st.color8",             STRING,  &colorname[8] },
-    { "st.color9",             STRING,  &colorname[9] },
-    { "st.color10",            STRING,  &colorname[10] },
-    { "st.color11",            STRING,  &colorname[11] },
-    { "st.color12",            STRING,  &colorname[12] },
-    { "st.color13",            STRING,  &colorname[13] },
-    { "st.color14",            STRING,  &colorname[14] },
-    { "st.color15",            STRING,  &colorname[15] },
-    { "st.foreground",         STRING,  &colorname[258] },
-    { "st.background",         STRING,  &colorname[259] },
-    { "st.cursorColor",        STRING,  &colorname[256] },
-    { "st.cursorColorReverse", STRING,  &colorname[257] },
-    { "st.termname",           STRING,  &termname },
-    { "st.shell",              STRING,  &shell },
-    { "st.minlatency",         INTEGER, &minlatency },
-    { "st.maxlatency",         INTEGER, &maxlatency },
-    { "st.blinktimeout",       INTEGER, &blinktimeout },
-    { "st.bellvolume",         INTEGER, &bellvolume },
-    { "st.tabspaces",          INTEGER, &tabspaces },
-    { "st.borderpx",           INTEGER, &borderpx },
-    { "st.cwscale",            FLOAT,   &cwscale },
-    { "st.chscale",            FLOAT,   &chscale },
+    /* name                     type     address */
+    { "st.font",                STRING,  &font },
+    { "st.color0",              STRING,  &colorname[0] },
+    { "st.color1",              STRING,  &colorname[1] },
+    { "st.color2",              STRING,  &colorname[2] },
+    { "st.color3",              STRING,  &colorname[3] },
+    { "st.color4",              STRING,  &colorname[4] },
+    { "st.color5",              STRING,  &colorname[5] },
+    { "st.color6",              STRING,  &colorname[6] },
+    { "st.color7",              STRING,  &colorname[7] },
+    { "st.color8",              STRING,  &colorname[8] },
+    { "st.color9",              STRING,  &colorname[9] },
+    { "st.color10",             STRING,  &colorname[10] },
+    { "st.color11",             STRING,  &colorname[11] },
+    { "st.color12",             STRING,  &colorname[12] },
+    { "st.color13",             STRING,  &colorname[13] },
+    { "st.color14",             STRING,  &colorname[14] },
+    { "st.color15",             STRING,  &colorname[15] },
+    { "st.cursorColor",         STRING,  &colorname[256] },
+    { "st.cursorColorReverse",  STRING,  &colorname[257] },
+    { "st.foreground",          STRING,  &colorname[258] },
+    { "st.background",          STRING,  &colorname[259] },
+    { "st.foregroundSelection", STRING,  &colorname[260] },
+    { "st.backgroundSelection", STRING,  &colorname[261] },
+    { "st.termname",            STRING,  &termname },
+    { "st.shell",               STRING,  &shell },
+    { "st.minlatency",          INTEGER, &minlatency },
+    { "st.maxlatency",          INTEGER, &maxlatency },
+    { "st.blinktimeout",        INTEGER, &blinktimeout },
+    { "st.bellvolume",          INTEGER, &bellvolume },
+    { "st.tabspaces",           INTEGER, &tabspaces },
+    { "st.borderpx",            INTEGER, &borderpx },
+    { "st.cwscale",             FLOAT,   &cwscale },
+    { "st.chscale",             FLOAT,   &chscale },
 };
