@@ -287,6 +287,7 @@ static double usedfontsize = 0;
 static double defaultfontsize = 0;
 
 static char *opt_alpha = NULL;
+static char *opt_alphaUnfocused = NULL;
 static char *opt_class = NULL;
 static char **opt_cmd  = NULL;
 static char *opt_embed = NULL;
@@ -971,18 +972,19 @@ xloadalpha(void)
 {
     xloadcolor(focused ?bg :bgUnfocused, NULL, &dc.col[defaultbg]);
     if (opt_alpha) alpha = strtof(opt_alpha, NULL);
+    if (opt_alphaUnfocused) alphaUnfocused = strtof(opt_alphaUnfocused, NULL);
     float const usedAlpha = focused ? alpha : alphaUnfocused;
     dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
     dc.col[defaultbg].pixel &= 0x00FFFFFF;
     dc.col[defaultbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
 
     /* set alpha value of selbg color */
-    dc.col[selectionbg].color.alpha = (unsigned short)(0xffff * alpha);
-    dc.col[selectionbg].color.red   = ((unsigned short)(dc.col[selectionbg].color.red * alpha)) & 0xff00;
-    dc.col[selectionbg].color.green = ((unsigned short)(dc.col[selectionbg].color.green * alpha)) & 0xff00;
-    dc.col[selectionbg].color.blue  = ((unsigned short)(dc.col[selectionbg].color.blue * alpha)) & 0xff00;
+    dc.col[selectionbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
+    //dc.col[selectionbg].color.red   = ((unsigned short)(dc.col[selectionbg].color.red * usedAlpha)) & 0xff00;
+    //dc.col[selectionbg].color.green = ((unsigned short)(dc.col[selectionbg].color.green * usedAlpha)) & 0xff00;
+    //dc.col[selectionbg].color.blue  = ((unsigned short)(dc.col[selectionbg].color.blue * usedAlpha)) & 0xff00;
     dc.col[selectionbg].pixel &= 0x00FFFFFF;
-    dc.col[selectionbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+    dc.col[selectionbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
 }
 
 void
@@ -2961,6 +2963,9 @@ main(int argc, char *argv[])
         break;
     case 'A':
         opt_alpha = EARGF(usage());
+        break;
+    case 'U':
+        opt_alphaUnfocused = EARGF(usage());
         break;
     case 'c':
         opt_class = EARGF(usage());
