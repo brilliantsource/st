@@ -181,9 +181,10 @@ static int ignoreselfg = 0;
  * 2: Block ("█")
  * 4: Underline ("_")
  * 6: Bar ("|")
- * 7: Snowman ("☃")
+ * 7: Custom block (default Snowman "☃")
  */
 static unsigned int cursorshape = 2;
+#define CUSTOM_BLOCK 0x2603 /* snowman (U+2603) */
 
 /*
  * Whether to use pixel geometry or cell geometry

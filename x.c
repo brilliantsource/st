@@ -970,8 +970,8 @@ void
 xloadalpha(void)
 {
     xloadcolor(focused ?bg :bgUnfocused, NULL, &dc.col[defaultbg]);
-    float const usedAlpha = focused ? alpha : alphaUnfocused;
     if (opt_alpha) alpha = strtof(opt_alpha, NULL);
+    float const usedAlpha = focused ? alpha : alphaUnfocused;
     dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
     dc.col[defaultbg].pixel &= 0x00FFFFFF;
     dc.col[defaultbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
@@ -2250,7 +2250,11 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
     if (IS_SET(MODE_FOCUSED)) {
         switch (win.cursor) {
         case 7: /* st extension */
-            g.u = 0x2603; /* snowman (U+2603) */
+            #ifdef CUSTOM_BLOCK
+                g.u = CUSTOM_BLOCK;
+            #else
+                g.u = 0x2603; /* snowman (U+2603) */
+            #endif
             /* FALLTHROUGH */
         case 0: /* Blinking Block */
         case 1: /* Blinking Block (Default) */
