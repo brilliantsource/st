@@ -1572,23 +1572,23 @@ tnewline(int first_col)
 void
 readcolonargs(char **p, int cursor, int params[][CAR_PER_ARG])
 {
-	int i = 0;
-	for (; i < CAR_PER_ARG; i++)
-		params[cursor][i] = -1;
+    int i = 0;
+    for (; i < CAR_PER_ARG; i++)
+        params[cursor][i] = -1;
 
-	if (**p != ':')
-		return;
+    if (**p != ':')
+        return;
 
-	char *np = NULL;
-	i = 0;
+    char *np = NULL;
+    i = 0;
 
-	while (**p == ':' && i < CAR_PER_ARG) {
-		while (**p == ':')
-			(*p)++;
-		params[cursor][i] = strtol(*p, &np, 10);
-		*p = np;
-		i++;
-	}
+    while (**p == ':' && i < CAR_PER_ARG) {
+        while (**p == ':')
+            (*p)++;
+        params[cursor][i] = strtol(*p, &np, 10);
+        *p = np;
+        i++;
+    }
 }
 
 void
@@ -2093,12 +2093,31 @@ csihandle(void)
     char buf[40];
     int len;
 
+    /* Mode '>' with Character '4' intercepted */
+    if (csiescseq.mode[0] == '>' && csiescseq.mode[1] == '4') {
+        csiescseq.mode[0] = 'm';  /* We force the Switch to handle SGR ('m') */
+        csiescseq.mode[1] = '\0'; /* We clean the second Mode Character */
+        csiescseq.priv = 0;       /* We clean the private Flag due to '>' */
+
+        /* We shift existing Arguments to insert '4' in first Position (arg[0]) */
+        for (int i = csiescseq.narg; i > 0; i--) {
+            if (i < ESC_ARG_SIZ) {
+                csiescseq.arg[i] = csiescseq.arg[i-1];
+            }
+        }
+        csiescseq.arg[0] = 4; /* '4' is now main Argument */
+        if (csiescseq.narg < ESC_ARG_SIZ)
+            csiescseq.narg++; /* We update the Argument Counter */
+    }
+
     switch (csiescseq.mode[0]) {
     default:
     unknown:
         fprintf(stderr, "erresc: unknown csi ");
         csidump();
         /* die(""); */
+        break;
+    case '$': /* Avoid error messages */
         break;
     case '@': /* ICH -- Insert <n> blank char */
         DEFAULT(csiescseq.arg[0], 1);
@@ -2299,7 +2318,7 @@ csihandle(void)
         break;
     case 'u': /* DECRC -- Restore cursor position (ANSI.SYS) */
         if (csiescseq.priv) {
-            goto unknown;
+            break; // Was goto unknown;
         } else {
             tcursor(CURSOR_LOAD);
         }
@@ -2353,6 +2372,7 @@ csidump(void)
     size_t i;
     uint c;
 
+    fprintf(stderr, " Mode[0]=%c Mode[1]=%c Arg=%d ", csiescseq.mode[0], csiescseq.mode[1], csiescseq.arg[0]);
     fprintf(stderr, "ESC[");
     for (i = 0; i < csiescseq.len; i++) {
         c = csiescseq.buf[i] & 0xff;
