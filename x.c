@@ -984,9 +984,6 @@ xloadalpha(void)
 
     /* set alpha value of selbg color */
     dc.col[selectionbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
-    //dc.col[selectionbg].color.red   = ((unsigned short)(dc.col[selectionbg].color.red * usedAlpha)) & 0xff00;
-    //dc.col[selectionbg].color.green = ((unsigned short)(dc.col[selectionbg].color.green * usedAlpha)) & 0xff00;
-    //dc.col[selectionbg].color.blue  = ((unsigned short)(dc.col[selectionbg].color.blue * usedAlpha)) & 0xff00;
     dc.col[selectionbg].pixel &= 0x00FFFFFF;
     dc.col[selectionbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
 }
