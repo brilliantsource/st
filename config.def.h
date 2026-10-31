@@ -248,17 +248,22 @@ static Shortcut shortcuts[] = {
     { ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
     { ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
     { XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
+    { ShiftMask,            XK_Up,          kscrollup,      {.i = +1} },
+    { ShiftMask,            XK_Down,        kscrolldown,    {.i = +1} },
+    { ShiftMask,            XK_Page_Up,     kscrollup,      {.i = +10} },
+    { ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = +10} },
+    { ShiftMask,            XK_Home,        kscrollup,      {.i = 1000000} },
+    { ShiftMask,            XK_End,         kscrolldown,    {.i = 1000000} },
     { TERMMOD,              XK_Prior,       zoom,           {.f = +1} },
     { TERMMOD,              XK_Next,        zoom,           {.f = -1} },
     { TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
     { TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
     { TERMMOD,              XK_V,           clippaste,      {.i =  0} },
     { TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
-    { ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
     { TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-    { MODKEY,               XK_bracketleft, chgalpha,       {.f = -1} }, /* Decrease opacity */
-    { MODKEY|ShiftMask,     XK_braceright,  chgalpha,       {.f = +1} }, /* Increase opacity */
-    { MODKEY,               XK_bracketright,chgalpha,       {.f =  0} }, /* Reset opacity */
+    { TERMMOD|MODKEY,       XK_Prior,       chgalpha,       {.f = +1} }, /* Increase opacity */
+    { TERMMOD|MODKEY,       XK_Next,        chgalpha,       {.f = -1} }, /* Decrease opacity */
+    { TERMMOD|MODKEY,       XK_Home,        chgalpha,       {.f =  0} }, /* Reset opacity */
 };
 
 /*

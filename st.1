@@ -1,9 +1,11 @@
-.TH ST 1 st\-VERSION
+.TH ST 1 st
 .SH NAME
 st \- simple terminal
 .SH SYNOPSIS
 .B st
 .RB [ \-aiv ]
+.RB [ \-A
+.IR opacity ]
 .RB [ \-c
 .IR class ]
 .RB [ \-d
@@ -12,6 +14,10 @@ st \- simple terminal
 .IR font ]
 .RB [ \-g
 .IR geometry ]
+.RB [ \-G
+.IR geometry ]
+.RB [ \-l
+.IR line ]
 .RB [ \-n
 .IR name ]
 .RB [ \-o
@@ -22,35 +28,14 @@ st \- simple terminal
 .IR title ]
 .RB [ \-l
 .IR line ]
+.RB [ \-U
+.IR opacity ]
 .RB [ \-w
 .IR windowid ]
 .RB [[ \-e ]
 .IR command
 .RI [ arguments ...]]
 .PP
-.B st
-.RB [ \-aiv ]
-.RB [ \-c
-.IR class ]
-.RB [ \-d
-.IR path ]
-.RB [ \-f
-.IR font ]
-.RB [ \-g
-.IR geometry ]
-.RB [ \-n
-.IR name ]
-.RB [ \-o
-.IR iofile ]
-.RB [ \-T
-.IR title ]
-.RB [ \-t
-.IR title ]
-.RB [ \-w
-.IR windowid ]
-.RB \-l
-.IR line
-.RI [ stty_args ...]
 .SH DESCRIPTION
 .B st
 is a simple terminal emulator.
@@ -58,6 +43,9 @@ is a simple terminal emulator.
 .TP
 .B \-a
 disable alternate screens in terminal
+.TP
+.BI \-A " opacity"
+defines the background opacity between 0.0 (transparent) to 1.0 (opaque).
 .TP
 .BI \-c " class"
 defines the window class (default $TERM).
@@ -72,7 +60,13 @@ defines the
 to use when st is run.
 .TP
 .BI \-g " geometry"
-defines the X11 geometry string.
+defines the X11 geometry string (in Text Cells).
+The form is [=][<cols>{xX}<rows>][{+-}<xoffset>{+-}<yoffset>]. See
+.BR XParseGeometry (3)
+for further details.
+.TP
+.BI \-G " geometry"
+defines the X11 geometry string (in Pixels).
 The form is [=][<cols>{xX}<rows>][{+-}<xoffset>{+-}<yoffset>]. See
 .BR XParseGeometry (3)
 for further details.
@@ -94,6 +88,9 @@ defines the window title (default 'st').
 .TP
 .BI \-t " title"
 defines the window title (default 'st').
+.TP
+.BI \-U " opacity"
+defines the background opacity of unfocused window between 0.0 (transparent) to 1.0 (opaque).
 .TP
 .BI \-w " windowid"
 embeds st within the window identified by
@@ -138,11 +135,11 @@ Send a break in the serial line.
 Break key is obtained in PC keyboards
 pressing at the same time control and pause.
 .TP
-.B Ctrl-Print Screen
+.B Ctrl\-Print Screen
 Toggle if st should print to the
 .I iofile.
 .TP
-.B Shift-Print Screen
+.B Shift\-Print Screen
 Print the full screen to the
 .I iofile.
 .TP
@@ -150,23 +147,97 @@ Print the full screen to the
 Print the selection to the
 .I iofile.
 .TP
-.B Ctrl-Shift-Page Up
+.B Shift\-Up
+Scrolls the terminal text layout up (backwards in history).
+.TP
+.B Shift\-Down
+Scrolls the terminal text layout down (forwards in history).
+.TP
+.TP
+.B Shift\-Page Up
+Scrolls the terminal text layout up (10 rows backwards in history).
+.TP
+.B Shift\-Page Down
+Scrolls the terminal text layout down (10 rows forwards in history).
+.TP
+.B Shift\-Home
+Scrolls the terminal text layout to the first command.
+.TP
+.B Shift\-End
+Scrolls the terminal text layout to the last command.
+.TP
+.B Ctrl\-Shift\-Page Up
 Increase font size.
 .TP
-.B Ctrl-Shift-Page Down
+.B Ctrl\-Shift\-Page Down
 Decrease font size.
 .TP
-.B Ctrl-Shift-Home
+.B Ctrl\-Shift\-Home
 Reset to default font size.
 .TP
-.B Ctrl-Shift-y
+.B Ctrl\-Shift\-y
 Paste from primary selection (middle mouse button).
 .TP
-.B Ctrl-Shift-c
+.B Ctrl\-Shift\-c
 Copy the selected text to the clipboard selection.
 .TP
-.B Ctrl-Shift-v
+.B Ctrl\-Shift\-v
 Paste from the clipboard selection.
+.TP
+.B Ctrl\-Alt\-Shift\-Page Up
+Increase the background opacity level.
+.TP
+.B Ctrl\-Alt\-Shift\-Page Down
+Decrease the background opacity level.
+.TP
+.B Ctrl\-Alt\-Shift\-Home
+Reset to default opacity.
+.SH XRESOURCES
+.B st
+checks the X server resource database for options on startup.
+It reads the following resource names (prefixed by "st."):
+.TP
+.B font
+Primary font string.
+.TP
+.B color0...color15
+Interface colors
+.TP
+.B cursorColor, cursorColorReverse
+Cursor colors
+.TP
+.B foreground, background, foregroundSelection, backgroundSelection
+Interface colors
+.TP
+.B termname
+Terminal type ($TERM)
+.TP
+.B shell
+Default shell (e.g. /bin/sh)
+.TP
+.B minlatency
+The minimum milliseconds st will wait before drawing to the screen after data arrives. Lower values reduce input lag but can cause text tearing during fast animations.
+.TP
+.B maxlatency
+The maximum milliseconds st can delay drawing if text is continuously streaming in. This guarantees that even if a massive file is being dumped (e.g., cat huge.txt), the terminal will still force a screen refresh at least every 33ms (~30 frames per second) rather than locking up until the file finishes.
+.TP
+.B blinktimeout
+The speed of the cursor/text blinking animation, measured in milliseconds. Setting it to 800 means a text attribute set to blink will cycle every 800ms. Setting this variable to 0 completely disables blinking across the terminal.
+.TP
+.B bellvolume
+The loudness of the system bell audio alert. It accepts a value ranging from -100 to 100. Setting it to 0 entirely silences the terminal's physical beep.
+.TP
+.B tabspaces
+The number of spaces a hard \t character occupies (usually set to 8).
+.TP
+.B borderpx
+The internal padding/margin around the edges of the terminal window, measured in pixels. It stops text from pressing directly up against the outer window borders.
+.TP
+.B cwscale
+Character width scale multiplier. By default, it is set to 1.0. Adjusting this values scales horizontal character spacing (kerning). For instance, setting it to 1.1 pushes letters slightly further apart to give text breathing room.
+.TP
+.B chscale
+Character height scale multiplier. By default, it is set to 1.0. Adjusting this value alters vertical row spacing. This is especially useful if your chosen font misreports its height and leaves ugly gaps between lines or cuts off box-drawing characters.
 .SH CUSTOMIZATION
 .B st
 can be customized by creating a custom config.h and (re)compiling the source
@@ -182,4 +253,3 @@ See the LICENSE file for the terms of redistribution.
 .BR scroll (1)
 .SH BUGS
 See the TODO file in the distribution.
-

@@ -975,17 +975,21 @@ void
 xloadalpha(void)
 {
     xloadcolor(focused ?bg :bgUnfocused, NULL, &dc.col[defaultbg]);
-    if (opt_alpha) alpha = strtof(opt_alpha, NULL);
+    if (opt_alpha) {
+        alpha = strtof(opt_alpha, NULL);
+        /* Backup default alpha value */
+        alpha_def = alpha;
+    }
     if (opt_alphaUnfocused) alphaUnfocused = strtof(opt_alphaUnfocused, NULL);
     float const usedAlpha = focused ? alpha : alphaUnfocused;
-    dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
+    dc.col[defaultbg].color.alpha = (unsigned short)(0xFFFF * usedAlpha);
     dc.col[defaultbg].pixel &= 0x00FFFFFF;
-    dc.col[defaultbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
+    dc.col[defaultbg].pixel |= (unsigned char)(0xFF * usedAlpha) << 24;
 
     /* set alpha value of selbg color */
-    dc.col[selectionbg].color.alpha = (unsigned short)(0xffff * usedAlpha);
+    dc.col[selectionbg].color.alpha = (unsigned short)(0xFFFF * usedAlpha);
     dc.col[selectionbg].pixel &= 0x00FFFFFF;
-    dc.col[selectionbg].pixel |= (unsigned char)(0xff * usedAlpha) << 24;
+    dc.col[selectionbg].pixel |= (unsigned char)(0xFF * usedAlpha) << 24;
 }
 
 void
@@ -1367,9 +1371,6 @@ xinit(int w, int h)
     usedfont = (opt_font == NULL)? font : opt_font;
     xloadfonts(usedfont, 0);
 
-    /* Backup default alpha value */
-    alpha_def = alpha;
-
     /* colors */
     xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
     xloadcols();
@@ -1631,7 +1632,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 void
 chgalpha(const Arg *arg)
 {
-   if (arg->f == -1.0f && alpha >= 0.1f)
+    if (arg->f == -1.0f && alpha >= 0.1f)
       alpha -= 0.1f;
    else if (arg->f == 1.0f && alpha < 1.0f)
       alpha += 0.1f;
@@ -1646,10 +1647,10 @@ chgalpha(const Arg *arg)
     if (alpha > 1.0f)
         alpha = 1.0f;
 
-   dc.col[defaultbg].color.alpha = (unsigned short)(0xFFFF * alpha);
-   /* Required to remove artifacting from borderpx */
-   cresize(0, 0);
-   redraw();
+    dc.col[defaultbg].color.alpha = (unsigned short)(0xFFFF * alpha);
+    /* Required to remove artifacting from borderpx */
+    cresize(0, 0);
+    redraw();
 }
 
 static int isSlopeRising (int x, int iPoint, int waveWidth)
